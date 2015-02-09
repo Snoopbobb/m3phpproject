@@ -1,68 +1,70 @@
 <?php 
 require_once('validate.php');
-require_once('validate_email.php');
-require_once('validate_password.php');
-require_once('validate_username.php');
-require_once('validate_phonenumber.php');
-require_once('validate_number.php');
-//Do tiny steps!
-$elements = [];
+require_once('email_validate.php');
+require_once('password_validate.php');
+require_once('username_validate.php');
+require_once('phonenumber_validate.php');
+require_once('number_validate.php');
+//The variables below must initialized to suppress notices :(
+$email = '';
+$password = '';
+$username = '';
+$phonenumber = '';
+$number = '';
+$mail_message = '';
+$password_message = '';
+$username_message = '';
+$phonenumber_message = '';
+$number_message = '';
 
-if (isset($_POST)) {
-	foreach ($_POST as $key => $value) {
-		$elements[] = $value;
+if (!empty($_POST)) {
+	if($_POST['email']) {
+		$email = $_POST['email'];
+		$emailValidate = new emailValidate;
+		if(!$emailValidate->isValid($email)) {
+			$mail_message = "Please enter a valid email address.";
+		} 
+	} else {
+		$mail_message = "Email must not be empty.";
+	}
+	if($_POST['password']) {
+		$password = $_POST['password'];
+		$validatePassword = new passwordValidate;
+		if(!$validatePassword->isValid($password)){
+			$password_message = "Password must have a minimum of 8 characters, 2 of which must be numeric.";	
+		}
+	} else {
+		$password_message = "Password must not be empty.";
+	}
+	if($_POST['username']) {
+		$username = $_POST['username'];
+		$validateUsername = new usernameValidate;
+		if(!$validateUsername->isValid($username)){
+			$username_message = "Username must conain at least 6 characters, numbers and letters only.";	
+		}
+	} else {
+		$username_message = "Username must not be empty.";
+	}
+	if($_POST['phone_number']) {
+		$phonenumber = $_POST['phone_number'];
+		$validatePhonenumber = new phonenumberValidate;
+		if(!$validatePhonenumber->isValid($phonenumber)){
+			$phonenumber_message = "Phone Number must be in the (555) 555-5555 format.";	
+		}
+	} else {
+		$phonenumber_message = "Phone Number must not be empty.";
+	}
+	if($_POST['number']) {
+		$number = $_POST['number'];
+		$validateNumber = new numberValidate;
+		if(!$validateNumber->isValid($number)) {
+			$number_message = "Only numbers allowed.";
+		}
+	} else {
+		$number_message = "Number must not be empty.";
 	}
 }
 
-$mail_message = '';
-$validate_mail = '';
-if (isset($_POST['email'])) {
-	$email = $_POST['email'];
-	$validate_mail = new ValidateEmail($email);
-	$mail_message = $validate_mail->ValidateEmail($email);
-} else {
-	$elements[0] = '';
-}
-
-$password_message = '';
-$validate_password = '';
-if (isset($_POST['password'])) {
-	$password = $_POST['password'];
-	$validate_password = new ValidatePassword($password);
-	$password_message = $validate_password->ValidatePassword($password);
-} else {
-	$elements[1] = '';
-}
-
-$username_message = '';
-$validate_username = '';
-if (isset($_POST['username'])) {
-	$username = $_POST['username'];
-	$validate_username = new ValidateUsername($username);
-	$username_message = $validate_username->ValidateUsername($username);
-} else {
-	$elements[2] = '';
-}
-
-$phonenumber_message = '';
-$validate_phonenumber = '';
-if (isset($_POST['phone_number'])) {
-	$phonenumber = $_POST['phone_number'];
-	$validate_phonenumber = new ValidatePhonenumber($phonenumber);
-	$phonenumber_message = $validate_phonenumber->ValidatePhonenumber($phonenumber);
-} else {
-	$elements[3] = '';
-}
-
-$number_message = '';
-$validate_number = '';
-if (isset($_POST['number'])) {
-	$number = $_POST['number'];
-	$validate_number = new ValidateNumber($number);
-	$number_message = $validate_number->ValidateNumber($number);
-} else {
-	$elements[4] = '';
-}
 ?>
 
 <!DOCTYPE html>
@@ -86,23 +88,23 @@ if (isset($_POST['number'])) {
 	<form action="" method="POST">
 		<div>
 			<h3>Email</h3>
-			<input type="text" name="email" value="<?php echo $elements[0]; ?>"><span><?php echo $mail_message; ?></span>
+			<input type="text" name="email" value="<?php echo $email; ?>"><span><?php echo $mail_message; ?></span>
 		</div>
 		<div>
 			<h3>Password</h3>
-			<input type="text" name="password" value="<?php echo $elements[1]; ?>"><span><?php echo $password_message; ?></span>
+			<input type="text" name="password" value="<?php echo $password; ?>"><span><?php echo $password_message; ?></span>
 		</div>
 		<div>
 			<h3>Username</h3>
-			<input type="text" name="username" value="<?php echo $elements[2]; ?>"><span><?php echo $username_message; ?></span>
+			<input type="text" name="username" value="<?php echo $username; ?>"><span><?php echo $username_message; ?></span>
 		</div>
 		<div>
 			<h3>Phone Number</h3>
-			<input type="text" name="phone number" value="<?php echo $elements[3]; ?>"><span><?php echo $phonenumber_message; ?></span>
+			<input type="text" name="phone number" value="<?php echo $phonenumber; ?>"><span><?php echo $phonenumber_message; ?></span>
 		</div>
 		<div>
 			<h3>Number</h3>
-			<input type="text" name="number" value="<?php echo $elements[4] ?>"><span><?php echo $number_message; ?></span>
+			<input type="text" name="number" value="<?php echo $number; ?>"><span><?php echo $number_message; ?></span>
 		</div>
 		<div>	
 			<button>Submit</button>
