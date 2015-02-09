@@ -17,54 +17,59 @@ $username_message = '';
 $phonenumber_message = '';
 $number_message = '';
 
-if (!empty($_POST)) {
-	if($_POST['email']) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	if(isset($_POST['email']) && $_POST['email']) {
 		$email = $_POST['email'];
 		$emailValidate = new emailValidate;
 		if(!$emailValidate->isValid($email)) {
-			$mail_message = "Please enter a valid email address.";
+			$mail_message = "'$email' is not a valid email address. Please enter a valid email address.";
+			$email = '';
 		} 
 	} else {
 		$mail_message = "Email must not be empty.";
 	}
-	if($_POST['password']) {
+	if(isset($_POST['password']) && $_POST['password']) {
 		$password = $_POST['password'];
 		$validatePassword = new passwordValidate;
 		if(!$validatePassword->isValid($password)){
-			$password_message = "Password must have a minimum of 8 characters, 2 of which must be numeric.";	
+			$password_message = "'$password' is not a valid password. It must contain a minimum of 8 characters, 2 of which must be numeric.";
+			$password = '';	
 		}
 	} else {
 		$password_message = "Password must not be empty.";
 	}
-	if($_POST['username']) {
+	if(isset($_POST['username']) && $_POST['username']) {
 		$username = $_POST['username'];
 		$validateUsername = new usernameValidate;
 		if(!$validateUsername->isValid($username)){
-			$username_message = "Username must conain at least 6 characters, numbers and letters only.";	
+			$username_message = "'$username' is not a valid Username. It must conain at least 6 characters, numbers and letters only.";	
+			$username = '';
 		}
 	} else {
 		$username_message = "Username must not be empty.";
 	}
-	if($_POST['phone_number']) {
+	if(isset($_POST['phone_number']) && $_POST['phone_number']) {
 		$phonenumber = $_POST['phone_number'];
 		$validatePhonenumber = new phonenumberValidate;
 		if(!$validatePhonenumber->isValid($phonenumber)){
-			$phonenumber_message = "Phone Number must be in the (555) 555-5555 format.";	
+			$phonenumber_message = "'$phonenumber' is not a valid phone number. It must be in the (555) 555-5555 format.";	
+			$phonenumber = '';
 		}
 	} else {
 		$phonenumber_message = "Phone Number must not be empty.";
 	}
-	if($_POST['number']) {
+	if(isset($_POST['number']) && $_POST['number']) {
 		$number = $_POST['number'];
 		$validateNumber = new numberValidate;
 		if(!$validateNumber->isValid($number)) {
-			$number_message = "Only numbers allowed.";
+			$number_message = "'$number' is not a valid number. Only numbers are allowed.";
+			$number = '';
 		}
 	} else {
 		$number_message = "Number must not be empty.";
 	}
 }
-
+// server request method
 ?>
 
 <!DOCTYPE html>
